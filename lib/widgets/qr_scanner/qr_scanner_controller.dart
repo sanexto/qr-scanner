@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:camera/camera.dart';
+import 'package:flutter_better_camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class QRScannerController{
@@ -21,7 +21,7 @@ class QRScannerController{
   Future<void> initialize() async{
 
     List<CameraDescription> cameraList = await availableCameras();
-    this._cameraController = CameraController(cameraList.first, this._resolutionPreset);
+    this._cameraController = CameraController(cameraList.first, this._resolutionPreset, flashMode: FlashMode.off);
 
     await this._cameraController.initialize();
     await this._cameraController.startImageStream((CameraImage image) async{
@@ -64,6 +64,12 @@ class QRScannerController{
 
     await this._cameraController.stopImageStream();
     await this._cameraController.dispose();
+
+  }
+
+  Future<void> setFlashMode(FlashMode flashMode) async{
+
+    await this._cameraController.setFlashMode(flashMode);
 
   }
 

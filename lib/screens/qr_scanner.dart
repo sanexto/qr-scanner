@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:permission_handler/permission_handler.dart';
-import 'package:camera/camera.dart';
+import 'package:flutter_better_camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_controller.dart';
@@ -31,6 +31,7 @@ class QRScanner extends StatefulWidget{
 class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
   GlobalKey<ScaffoldState> _scaffoldKey;
+  bool _flashActivated;
   Future<void> _initFuture;
   QRScannerController _qrScannerController;
 
@@ -42,6 +43,7 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(this);
 
     this._scaffoldKey = GlobalKey<ScaffoldState>();
+    this._flashActivated = false;
     this._initFuture = this._init();
 
   }
@@ -86,6 +88,34 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
         title: Text(this.widget._title),
         backgroundColor: Colors.transparent,
         elevation: 0.0,
+        actions: <Widget>[
+          IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            icon: this._flashActivated ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
+            onPressed: () async{
+
+              await this._initFuture;
+
+              if(this._flashActivated){
+
+                await this._qrScannerController.setFlashMode(FlashMode.off);
+
+                this._flashActivated = false;
+
+              }else{
+
+                await this._qrScannerController.setFlashMode(FlashMode.torch);
+
+                this._flashActivated = true;
+
+              }
+
+              setState((){});
+
+            },
+          )
+        ],
       ),
       body: FutureBuilder(
         future: this._initFuture,

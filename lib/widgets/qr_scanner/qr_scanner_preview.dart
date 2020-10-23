@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:camera/camera.dart';
+import 'package:flutter_better_camera/camera.dart';
 
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_controller.dart';
 

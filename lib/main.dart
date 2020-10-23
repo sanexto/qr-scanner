@@ -9,8 +9,8 @@ void main(){
   runApp(
     MaterialApp(
       home: QRScanner(
-        title: 'QR Scanner',
-        scannerSize: 0.6,
+        title: '',
+        scannerSize: 0.7,
         permissions: <Permission>[
           Permission.storage,
           Permission.camera,

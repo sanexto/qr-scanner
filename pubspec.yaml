@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   permission_handler: ^5.0.1+1
-  camera: ^0.5.8+9
+  flutter_better_camera: ^0.6.1
   firebase_ml_vision: ^0.9.7
 
   # The following adds the Cupertino Icons font to your application.
