@@ -21,7 +21,28 @@ class QRScannerPreview extends StatefulWidget{
 
 }
 
-class QRScannerPreviewState extends State<QRScannerPreview>{
+class QRScannerPreviewState extends State<QRScannerPreview> with SingleTickerProviderStateMixin{
+
+  AnimationController _animationController;
+  Animation _animation;
+
+  @override
+  void initState(){
+
+    super.initState();
+
+    this._initAnimation();
+
+  }
+
+  @override
+  void dispose(){
+
+    this._disposeAnimation();
+
+    super.dispose();
+
+  }
 
   @override
   Widget build(BuildContext context){
@@ -35,8 +56,47 @@ class QRScannerPreviewState extends State<QRScannerPreview>{
           ),
           clipper: QRScannerPreviewClipper(this.widget._scannerSize),
         ),
+        FadeTransition(
+          opacity: this._animation,
+          child: Center(
+            child: Container(
+              width: double.infinity,
+              height: 1.0,
+              margin: EdgeInsets.symmetric(
+                horizontal: 64 * this.widget._scannerSize,
+              ),
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
+        ),
       ],
     );
+
+  }
+
+  void _initAnimation(){
+
+    this._animationController = AnimationController(
+      vsync: this,
+      duration: Duration(
+        milliseconds: 300,
+      ),
+    );
+
+    this._animation = Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(this._animationController);
+
+    this._animationController.repeat(
+      reverse: true,
+    );
+
+  }
+
+  void _disposeAnimation(){
+
+    this._animationController.dispose();
 
   }
 
