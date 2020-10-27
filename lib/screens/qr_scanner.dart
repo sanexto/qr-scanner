@@ -1,13 +1,14 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_better_camera/camera.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+
+import 'package:qr_scanner/utils/utils.dart';
 
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_controller.dart';
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_preview.dart';
+
+import 'package:qr_scanner/screens/qr_scanner_result.dart';
 
 class QRScanner extends StatefulWidget{
 
@@ -30,8 +31,8 @@ class QRScanner extends StatefulWidget{
 
 class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
-  GlobalKey<ScaffoldState> _scaffoldKey;
   bool _flashActivated;
+  bool _inited;
   Future<void> _initFuture;
   QRScannerController _qrScannerController;
 
@@ -42,8 +43,8 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
     WidgetsBinding.instance.addObserver(this);
 
-    this._scaffoldKey = GlobalKey<ScaffoldState>();
     this._flashActivated = false;
+    this._inited = false;
     this._initFuture = this._init();
 
   }
@@ -62,17 +63,21 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
   @override
   void didChangeAppLifecycleState(AppLifecycleState state){
 
-    if(state == AppLifecycleState.resumed){
+    if(this._inited){
 
-      setState((){
+      if(state == AppLifecycleState.resumed){
 
-        this._initFuture = this._init();
+        setState((){
 
-      });
+          this._initFuture = this._init();
 
-    }else if(state == AppLifecycleState.paused){
+        });
 
-      this._dispose();
+      }else if(state == AppLifecycleState.paused){
+
+        this._dispose();
+
+      }
 
     }
 
@@ -82,7 +87,6 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
   Widget build(BuildContext context){
 
     return Scaffold(
-      key: this._scaffoldKey,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(this.widget._title),
@@ -95,23 +99,25 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
             icon: this._flashActivated ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
             onPressed: () async{
 
-              await this._initFuture;
+              if(this._inited){
 
-              if(this._flashActivated){
+                if(this._flashActivated){
 
-                await this._qrScannerController.setFlashMode(FlashMode.off);
+                  await this._qrScannerController.setFlashMode(FlashMode.off);
 
-                this._flashActivated = false;
+                  this._flashActivated = false;
 
-              }else{
+                }else{
 
-                await this._qrScannerController.setFlashMode(FlashMode.torch);
+                  await this._qrScannerController.setFlashMode(FlashMode.torch);
 
-                this._flashActivated = true;
+                  this._flashActivated = true;
+
+                }
+
+                setState((){});
 
               }
-
-              setState((){});
 
             },
           )
@@ -141,52 +147,42 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
   Future<void> _init() async{
 
-    await this._checkPermissions();
-    await this._initQRScannerController();
+    await Utils.checkPermissions(this.widget._permissions);
+
+    this._qrScannerController = QRScannerController(processQRScannerResult, ResolutionPreset.max);
+
+    await this._qrScannerController.initialize();
+    await this._qrScannerController.startImageStream();
+
+    this._inited = true;
 
   }
 
   Future<void> _dispose() async{
 
-    await this._disposeQRScannerController();
-
-  }
-
-  Future<void> _checkPermissions() async{
-
-    for(Permission permission in this.widget._permissions){
-
-      if(await permission.isUndetermined || await permission.isDenied){
-
-        await permission.request();
-
-      }
-
-    }
-
-  }
-
-  Future<void> _initQRScannerController() async{
-
-    this._qrScannerController = QRScannerController(processQRScanResult, ResolutionPreset.max);
-
-    await this._qrScannerController.initialize();
-
-  }
-
-  Future<void> _disposeQRScannerController() async{
-
+    await this._qrScannerController.stopImageStream();
     await this._qrScannerController.dispose();
 
   }
 
-  void processQRScanResult(List<Barcode> barcodeList){
+  Future<void> processQRScannerResult(String qrContent) async{
 
-    if(barcodeList.length > 0){
+    if(qrContent.isNotEmpty){
 
-      this._scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(barcodeList.first.rawValue)));
+      await Navigator.push(
+        this.context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => QRScannerResult(
+            title: 'Result',
+            qrContent: qrContent,
+            permissions: <Permission>[],
+          ),
+        ),
+      );
 
     }
+
+    this._qrScannerController.resumeImageStream();
 
   }
 

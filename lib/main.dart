@@ -16,6 +16,15 @@ void main(){
           Permission.camera,
         ],
       ),
+      theme: ThemeData(
+        primaryColor: Colors.green,
+        accentColor: Colors.green,
+        primaryTextTheme: TextTheme(
+          headline6: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
     ),
   );
 

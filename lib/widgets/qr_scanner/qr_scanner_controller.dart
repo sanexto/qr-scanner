@@ -3,18 +3,22 @@ import 'dart:ui';
 import 'package:flutter_better_camera/camera.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
+typedef Future<dynamic> ScannerCallback(String qrContent);
+
 class QRScannerController{
 
-  Function(List<Barcode>) _scannerCallback;
+  ScannerCallback _scannerCallback;
   ResolutionPreset _resolutionPreset;
   CameraController _cameraController;
+  bool _imageStreamPaused;
 
   CameraController get cameraController => this._cameraController;
 
-  QRScannerController(Function(List<Barcode>) scannerCallback, ResolutionPreset resolutionPreset){
+  QRScannerController(ScannerCallback scannerCallback, ResolutionPreset resolutionPreset){
 
     this._scannerCallback = scannerCallback;
     this._resolutionPreset = resolutionPreset;
+    this._imageStreamPaused = false;
 
   }
 
@@ -24,7 +28,44 @@ class QRScannerController{
     this._cameraController = CameraController(cameraList.first, this._resolutionPreset, flashMode: FlashMode.off);
 
     await this._cameraController.initialize();
-    await this._cameraController.startImageStream((CameraImage image) async{
+
+  }
+
+  Future<void> dispose() async{
+
+    await this._cameraController.dispose();
+
+  }
+
+  Future<void> startImageStream() async{
+
+    await this._cameraController.startImageStream(_onLatestImageAvailable);
+
+  }
+
+  Future<void> stopImageStream() async{
+
+    await this._cameraController.stopImageStream();
+
+  }
+
+  void resumeImageStream(){
+
+    this._imageStreamPaused = false;
+
+  }
+
+  Future<void> setFlashMode(FlashMode flashMode) async{
+
+    await this._cameraController.setFlashMode(flashMode);
+
+  }
+
+  Future<void> _onLatestImageAvailable(CameraImage image) async{
+
+    if(!this._imageStreamPaused){
+
+      this._imageStreamPaused = true;
 
       FirebaseVisionImageMetadata firebaseVisionImageMetadata = FirebaseVisionImageMetadata(
         size: Size(image.width.toDouble(), image.height.toDouble()),
@@ -51,25 +92,13 @@ class QRScannerController{
       FirebaseVisionImage firebaseVisionImage = FirebaseVisionImage.fromBytes(image.planes[0].bytes, firebaseVisionImageMetadata);
       BarcodeDetector barcodeDetector = FirebaseVision.instance.barcodeDetector(BarcodeDetectorOptions(barcodeFormats: BarcodeFormat.qrCode));
       List<Barcode> barcodeList = await barcodeDetector.detectInImage(firebaseVisionImage);
+      String qrContent = barcodeList.length > 0 ? barcodeList.first.rawValue : '';
 
       barcodeDetector.close();
 
-      this._scannerCallback(barcodeList);
+      await this._scannerCallback(qrContent);
 
-    });
-
-  }
-
-  Future<void> dispose() async{
-
-    await this._cameraController.stopImageStream();
-    await this._cameraController.dispose();
-
-  }
-
-  Future<void> setFlashMode(FlashMode flashMode) async{
-
-    await this._cameraController.setFlashMode(flashMode);
+    }
 
   }
 
