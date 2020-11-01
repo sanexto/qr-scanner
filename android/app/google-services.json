@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "471162818510",
-    "firebase_url": "https://qr-scanner-flutter-application.firebaseio.com",
-    "project_id": "qr-scanner-flutter-application",
-    "storage_bucket": "qr-scanner-flutter-application.appspot.com"
+    "project_number": "859512948904",
+    "firebase_url": "https://qr-scanner-flutter-app.firebaseio.com",
+    "project_id": "qr-scanner-flutter-app",
+    "storage_bucket": "qr-scanner-flutter-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:471162818510:android:005cea4068f1e32646659f",
+        "mobilesdk_app_id": "1:859512948904:android:7c07dff76425b3e7701a9d",
         "android_client_info": {
           "package_name": "net.tenly.qr_scanner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "471162818510-hotuo6n57344lsgb6rsea06rcipqbehp.apps.googleusercontent.com",
+          "client_id": "859512948904-7e5potg62mo9sqsm3g2he8pi23rfbfci.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDQgUjWIJV5lZnI3_NTaP5Uft7UTJXu2x8"
+          "current_key": "AIzaSyCy3FqXgGJOxY7pEpQxbVB4HcLh3SCCfK0"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "471162818510-hotuo6n57344lsgb6rsea06rcipqbehp.apps.googleusercontent.com",
+              "client_id": "859512948904-7e5potg62mo9sqsm3g2he8pi23rfbfci.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
