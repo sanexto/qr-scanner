@@ -97,29 +97,7 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             icon: this._flashActivated ? Icon(Icons.flash_on) : Icon(Icons.flash_off),
-            onPressed: () async{
-
-              if(this._inited){
-
-                if(this._flashActivated){
-
-                  await this._qrScannerController.setFlashMode(FlashMode.off);
-
-                  this._flashActivated = false;
-
-                }else{
-
-                  await this._qrScannerController.setFlashMode(FlashMode.torch);
-
-                  this._flashActivated = true;
-
-                }
-
-                setState((){});
-
-              }
-
-            },
+            onPressed: this._onPressFlashButton,
           )
         ],
       ),
@@ -169,6 +147,12 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
     if(qrContent.isNotEmpty){
 
+      if(this._flashActivated){
+
+        await this._onPressFlashButton();
+
+      }
+
       await Navigator.push(
         this.context,
         MaterialPageRoute(
@@ -183,6 +167,30 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
     }
 
     this._qrScannerController.resumeImageStream();
+
+  }
+
+  Future<void> _onPressFlashButton() async{
+
+    if(this._inited){
+
+      if(this._flashActivated){
+
+        await this._qrScannerController.setFlashMode(FlashMode.off);
+
+        this._flashActivated = false;
+
+      }else{
+
+        await this._qrScannerController.setFlashMode(FlashMode.torch);
+
+        this._flashActivated = true;
+
+      }
+
+      setState((){});
+
+    }
 
   }
 
