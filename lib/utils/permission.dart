@@ -1,12 +1,16 @@
-import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as permission_handler;
 
-Future<void> checkPermissions(List<Permission> permissions) async{
+class Permission{
 
-  for(Permission permission in permissions){
+  static Future<void> checkPermissions(List<permission_handler.Permission> permissions) async{
 
-    if(await permission.isUndetermined || await permission.isDenied){
+    for(permission_handler.Permission permission in permissions){
 
-      await permission.request();
+      if(await permission.isUndetermined || await permission.isDenied){
+
+        await permission.request();
+
+      }
 
     }
 

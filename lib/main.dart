@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'utils/advertisement.dart' as ad_utils;
+
 import 'package:qr_scanner/screens/qr_scanner.dart';
 
 Future<void> main() async{
 
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+  await ad_utils.Advertisement.initialize();
 
   runApp(
     MaterialApp(
