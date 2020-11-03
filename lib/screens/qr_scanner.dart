@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_better_camera/camera.dart';
 
-import 'package:qr_scanner/utils/utils.dart';
+import 'package:qr_scanner/utils/permission.dart' as permission_utils;
 
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_controller.dart';
 import 'package:qr_scanner/widgets/qr_scanner/qr_scanner_preview.dart';
@@ -125,7 +125,7 @@ class QRScannerState extends State<QRScanner> with WidgetsBindingObserver{
 
   Future<void> _init() async{
 
-    await Utils.checkPermissions(this.widget._permissions);
+    await permission_utils.checkPermissions(this.widget._permissions);
 
     this._qrScannerController = QRScannerController(processQRScannerResult, ResolutionPreset.max);
 

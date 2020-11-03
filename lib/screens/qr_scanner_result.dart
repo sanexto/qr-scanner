@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import 'package:qr_scanner/utils/utils.dart';
+import 'package:qr_scanner/utils/permission.dart' as permission_utils;
 
 class QRScannerResult extends StatefulWidget{
 
@@ -178,7 +178,7 @@ class QRScannerResultState extends State<QRScannerResult>{
 
   Future<void> _init() async{
 
-    await Utils.checkPermissions(this.widget._permissions);
+    await permission_utils.checkPermissions(this.widget._permissions);
 
     this._inited = true;
 
