@@ -178,7 +178,7 @@ class QRScannerResultState extends State<QRScannerResult>{
 
   Future<void> _init() async{
 
-    await permission_utils.checkPermissions(this.widget._permissions);
+    await permission_utils.Permission.checkPermissions(this.widget._permissions);
 
     this._inited = true;
 
