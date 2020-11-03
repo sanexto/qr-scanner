@@ -56,7 +56,12 @@ class QRScannerResultState extends State<QRScannerResult>{
       ),
       body: SingleChildScrollView(
         child: Container(
-          margin: EdgeInsets.all(8.0),
+          margin: EdgeInsets.only(
+            top: 8.0,
+            right: 8.0,
+            bottom: 120.0,
+            left: 8.0,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
