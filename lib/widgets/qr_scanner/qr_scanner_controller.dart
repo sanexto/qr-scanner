@@ -76,16 +76,6 @@ class QRScannerController{
             width: image.planes[0].width,
             height: image.planes[0].height,
           ),
-          FirebaseVisionImagePlaneMetadata(
-            bytesPerRow: image.planes[1].bytesPerRow,
-            width: image.planes[1].width,
-            height: image.planes[1].height,
-          ),
-          FirebaseVisionImagePlaneMetadata(
-            bytesPerRow: image.planes[2].bytesPerRow,
-            width: image.planes[2].width,
-            height: image.planes[2].height,
-          ),
         ],
       );
 
